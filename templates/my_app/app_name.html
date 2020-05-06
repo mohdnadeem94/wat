@@ -1,24 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row">
-  {% for post in walmart_list  %}
-    <div class="col s4">
-      <div class="card small">
-        <div class="card-image">
-            <a href="{{ post.2 }}"><img src="{{ post.4 }}" alt=""></a>
-        </div>
-        <div class="card-content">
-            <p>{{post.0}}</p>
-        </div>
-        <div class="card-action">
-          <ul>
-            <li><a href="{{ post.2 }}">Listing Price: {{ post.1}}</a></li>
-            <li><a href="{{ post.2 }}">Seller Name: {{ post.3}}</a></li>
-            <li>Rating: {{ post.5}}/5 No. of reviews: {{ post.6}}</li>
-          </ul>
+<div class="container">
+  <div class="row">
+    {% for post in combined_list %}
+      <div class="col s4">
+        <div class="card medium">
+          <div class="card-image">
+              <a href="{{ post.1 }}"><img src="{{ post.2 }}" alt=""></a>
+          </div>
+          <div class="card-action">
+            <ul>
+              <p>{{post.0 | slice:40}}..</p>
+              <li><a href="{{ post.1 }}">Listing Price: {{post.3}}</a></li>
+              <li><a href="{{ post.1 }}">Seller Name/Product Info: {{post.5}}</a></li>
+              <li> Shipping Cost : {{post.4}}</li>
+              <li>Rating: {{post.6}}/5 Website: {{post.8}} </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}
