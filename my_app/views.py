@@ -4,8 +4,9 @@ from django.shortcuts import render
 from bs4 import BeautifulSoup
 import requests
 from requests.compat import quote_plus
+from . import models
+import datetime
 #&sort=price_low
-amazon_url ='https://www.amazon.com/s?k={sear}&ref=nb_sb_noss_2'
 walmart_url = 'https://www.walmart.com/search/?page=1&query={}'
 bj_url = 'https://www.bjs.com/search/{}/q'
 ebay_url= 'https://www.ebay.com/sch/i.html?_from=R40&_nkw={}&_sacat=0&_sop=12&_pgn=1'
@@ -14,7 +15,7 @@ ebay_url= 'https://www.ebay.com/sch/i.html?_from=R40&_nkw={}&_sacat=0&_sop=12&_p
 def AppPage(request):
 
     search = request.POST.get('search')
-
+    models.Search.objects.create(search=search,created=datetime.datetime.now())
     walmart_final_url = walmart_url.format(quote_plus(search))
     walmart_link = requests.get(walmart_final_url, auth=('user', 'pass'))
     walmart_data = walmart_link.text
@@ -124,7 +125,7 @@ def AppPage(request):
             continue
 
         ebay_shipping = str(ebay_listings[item].find('span', {'class':'s-item__shipping s-item__logisticsCost'}))
-        if ('Free' in ebay_shipping) or (ebay_shipping =='None') or ('Freight' in ebay_shipping) :
+        if ('Free' in ebay_shipping) or (ebay_shipping =='None') or ('Freight' in ebay_shipping) or ('Shipping not specified' in ebay_shipping):
             ebay_shipping = 0
         else:
             ebay_shipping = float(ebay_shipping.split('$')[1].split(' ')[0])
@@ -171,10 +172,22 @@ def AppPage(request):
 
     combined_list = walmart_list + ebay_list +bj_list
 
+    import difflib
+    import random
     # take second element for sort
     def takeSecond(elem):
         return elem[7]
     # sort list with key
-    combined_list.sort(key=takeSecond)
+    #combined_list.sort(key=takeSecond)
+    #combined_list.sort(key=takeSecond)
+    random.shuffle(combined_list)
+    if request.POST.get('rose') == 'plotohi':
+        def takeSecond(elem):
+            return elem[7]
+        combined_list.sort(key=takeSecond)
+    elif request.POST.get('rose') == "best":
+        combined_list = sorted(combined_list, key=lambda x: difflib.SequenceMatcher(None, x, search).ratio(), reverse=True)
+    else:
+        combined_list = sorted(combined_list, key=lambda x: difflib.SequenceMatcher(None, x, search).ratio(), reverse=True)
 
-    return render(request,'my_app/app_name.html',context = {'combined_list':combined_list})
+    return render(request,'my_app/app_name.html',context = {'search':search,'combined_list':combined_list})

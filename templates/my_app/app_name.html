@@ -5,17 +5,18 @@
     <form action="{% url 'my_app:app_page' %}" method="post" style="text-align: center">
         {% csrf_token %}
         <div class="input-field col s12">
-          <input  name="search" type="text" id="autocomplete-input" class="autocomplete">
+          <input  name="search" type="text" id="autocomplete-input" class="autocomplete" value="{{search|title}}">
           <label for="autocomplete-input">Search for the items here</label>
         </div>
         <!-- <input type="text" name="search" placeholder="Search for the items here"> -->
         <div class="row">
           <div class="col s4">
-            <select value ="rose" name="rose">
-              <option value="" disabled selected >Sort By</option>
-              <option value="atlanta">Price High to Low</option>
-              <option value="austin">Ratings Low to High</option>
-              <option value="boston">Ratings High to Low</option>
+            <select value ="rose" name="rose" '>
+              <!-- <option value="" disabled selected >Sort By</option> -->
+              <option value="best">Best Match</option>
+              <option value="plotohi">Price High to Low</option>
+              <option value="rlotohi">Ratings Low to High</option>
+              <option value="rhitolw">Ratings High to Low</option>
             </select>
           </div>
           <div class="col s4">
@@ -30,6 +31,7 @@
         </button>
     </form>
     <br>
+    <h5>Showing Results for {{search|title}}</h5>
     {% for post in combined_list %}
       <div class="col m4 s12">
         <div class="card medium">
