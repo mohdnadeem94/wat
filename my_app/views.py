@@ -124,7 +124,7 @@ def AppPage(request):
             continue
 
         ebay_shipping = str(ebay_listings[item].find('span', {'class':'s-item__shipping s-item__logisticsCost'}))
-        if ('Free' in ebay_shipping) or (ebay_shipping =='None') :
+        if ('Free' in ebay_shipping) or (ebay_shipping =='None') or ('Freight' in ebay_shipping) :
             ebay_shipping = 0
         else:
             ebay_shipping = float(ebay_shipping.split('$')[1].split(' ')[0])
